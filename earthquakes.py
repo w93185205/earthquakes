@@ -26,6 +26,9 @@ def get_magnitudes_per_year(earthquakes):
         year = get_year(quake)
         magnitude = get_magnitude(quake)
 
+        # Debug output to check the year and magnitude
+        print(f"Year: {year}, Magnitude: {magnitude}")
+
         if magnitude is not None:
             if year in magnitudes_per_year:
                 magnitudes_per_year[year].append(magnitude)
@@ -37,7 +40,10 @@ def plot_average_magnitude_per_year(earthquakes):
     """Plot the average magnitude of earthquakes per year."""
     magnitudes_per_year = get_magnitudes_per_year(earthquakes)
     years = sorted(magnitudes_per_year.keys())
-    average_magnitudes = [sum(magnitudes_per_year[year]) / len(magnitudes_per_year[year]) for year in years]
+    average_magnitudes = [
+        sum(magnitudes_per_year[year]) / len(magnitudes_per_year[year])
+        for year in years if len(magnitudes_per_year[year]) > 0
+    ]
 
     plt.figure(figsize=(10, 6))
     plt.plot(years, average_magnitudes, marker='o', linestyle='-', color='red')
@@ -73,8 +79,10 @@ quakes = get_data()['features']
 
 # Debugging step: Check if data is loaded correctly
 print(f"Number of earthquakes: {len(quakes)}")
-
-# Generate and show plots
-plot_number_per_year(quakes)
-plt.clf()  # Clear the figure for the next plot
-plot_average_magnitude_per_year(quakes)
+if len(quakes) == 0:
+    print("No earthquake data found.")
+else:
+    # Generate and show plots
+    plot_number_per_year(quakes)
+    plt.clf()  # Clear the figure for the next plot
+    plot_average_magnitude_per_year(quakes)
